@@ -1,7 +1,11 @@
 ## MMC5883
 Driver for the MMC5883 magnetometer sensor
 
-Example usage:
+## Information
+This code is a simple driver intended to be used in a flight computer. The code was implemented using references:
+* MEMSIC MMC5883MA Rev.C datasheet
+
+## Example usage:
 ```
 >>import time
 >>import MMC5883
