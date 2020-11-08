@@ -3,6 +3,8 @@ import RPi.GPIO as gpio
 from numpy import array, dot, ones, shape, argmax, eye, zeros, real, sqrt
 from numpy.linalg import inv, eig
 from scipy.linalg import sqrtm
+import time
+import sys
 
 # Register addresses
 DATA_XOUT_L = 0x00
@@ -44,11 +46,17 @@ class mmc5883():
         return [s[0, 0], s[1, 0], s[2, 0]]
         
     def calibrate(self):
+        print("Calibrating MMC5883 - move sensor around")
+        
         # Gather data (make sure to wave the sensor around)
         data = []
         for i in range(600):
             data.append(self.get_mag())
             time.sleep(0.1)
+            
+            # Print progress bar
+            if not i%30:
+                print("[{}{}] - {}% \r".format(int(i/30) * "■", (19 - int(i/30)) * ".", int(i / 6)), end = '')
             
         # Fit ellipse to the data (credit to Teslabs Engineering)
         data = array(data).T
@@ -98,3 +106,4 @@ class mmc5883():
         # Set the hard and soft offsets
         self.b = -dot(M_1, n)
         self.A = real(F / sqrt(dot(n.T, dot(M_1, n)) - d) * sqrtm(M))
+        
